@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PORTAL ENIGMA FALLS - Oficial</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <style>
+        body { font-family: 'Arial', sans-serif; background: #fff; margin: 0; padding: 0; }
+        header { border-bottom: 2px solid #000; padding: 20px; text-align: center; position: relative; }
+        h1 { margin: 0; font-size: 40px; text-transform: uppercase; font-weight: 900; }
+        #admin-panel { display: none; background: #1a1a1a; color: #fff; padding: 20px; border-bottom: 5px solid #ff0000; }
+        #admin-panel input, #admin-panel textarea { width: 100%; margin: 10px 0; padding: 10px; border: none; border-radius: 4px; }
+        #admin-panel button { background: #ff0000; color: white; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; width: 100%; }
+        #news-container { max-width: 900px; margin: 20px auto; padding: 20px; }
+        .news-item { border-bottom: 1px solid #ddd; margin-bottom: 30px; padding-bottom: 20px; }
+        .news-item img { width: 100%; max-height: 500px; object-fit: cover; border-radius: 8px; }
+        .news-item h2 { font-size: 32px; color: #000; margin: 15px 0 5px 0; text-transform: uppercase; }
+        .news-item .artist { font-weight: bold; color: #ff0000; font-size: 14px; margin-bottom: 10px; display: block; }
+        .news-item .content { line-height: 1.6; color: #333; font-size: 18px; }
+        #login-btn { position: fixed; bottom: 20px; right: 20px; background: none; border: none; cursor: pointer; font-size: 24px; opacity: 0.3; }
+        #login-btn:hover { opacity: 1; }
+    </style>
+</head>
+<body>
+
+<div id="admin-panel">
+    <h3>Painel de Redação - Enigma Falls</h3>
+    <input type="text" id="title" placeholder="TÍTULO DA NOTÍCIA (EM MAIÚSCULAS)">
+    <input type="text" id="artist" placeholder="NOME DO ARTISTA / PESSOA ENVOLVIDA">
+    <textarea id="facts" placeholder="DESCREVA O QUE ACONTECEU (OS FATOS)..." rows="4"></textarea>
+    <input type="text" id="image" placeholder="LINK DA IMAGEM (.JPG ou .PNG)">
+    <button onclick="publishNews()">PUBLICAR NOTÍCIA AGORA</button>
+    <button onclick="logout()" style="background: #444; margin-top: 10px;">SAIR DO PAINEL</button>
+</div>
+
+<header>
+    <h1>PORTAL ENTRETENIMENTO</h1>
+    <div style="font-weight: bold; letter-spacing: 2px;">ENIGMA FALLS</div>
+</header>
+
+<div id="news-container">
+    </div>
+
+<button id="login-btn" onclick="login()">🔒</button>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBtQZwmY-PG9SVlFueM0o2n4Mj0ebVQwTY",
+        authDomain: "portal-enigma-falls.firebaseapp.com",
+        projectId: "portal-enigma-falls",
+        storageBucket: "portal-enigma-falls.firebasestorage.app",
+        messagingSenderId: "1066927825058",
+        appId: "1:1066927825058:web:61ec0e94c15dc1ab33f7fb"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    const autorizados = ["ft5461299@gmail.com"];
+
+    // LOGIN POR REDIRECT (Resolve o problema do Edge e Pop-up)
+    function login() {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithRedirect(provider);
+    }
+
+    // VERIFICA SE VOLTOU DO LOGIN
+    auth.getRedirectResult().then(() => {
+        auth.onAuthStateChanged(user => {
+            if (user && autorizados.includes(user.email)) {
+                document.getElementById('admin-panel').style.display = 'block';
+                document.getElementById('login-btn').style.display = 'none';
+            }
+        });
+    });
+
+    function logout() {
+        auth.signOut().then(() => location.reload());
+    }
+
+    function publishNews() {
+        const title = document.getElementById('title').value;
+        const artist = document.getElementById('artist').value;
+        const facts = document.getElementById('facts').value;
+        const image = document.getElementById('image').value;
+
+        if(!title || !facts) return alert("Preencha o título e os fatos!");
+
+        // IA Simples: Transforma fatos em texto formal
+        const textoFormal = `Nesta data, recebemos informações exclusivas sobre ${artist}. Segundo apurado pela nossa redação: ${facts}. O caso segue sendo acompanhado de perto pelo Portal Enigma Falls.`;
+
+        db.ref('noticias').push({
+            title, artist, content: textoFormal, image, date: new Date().toLocaleString()
+        });
+
+        alert("Publicado!");
+        location.reload();
+    }
+
+    // CARREGAR NOTÍCIAS
+    db.ref('noticias').on('value', snapshot => {
+        const container = document.getElementById('news-container');
+        container.innerHTML = "";
+        snapshot.forEach(child => {
+            const n = child.val();
+            container.innerHTML = `
+                <div class="news-item">
+                    ${n.image ? `<img src="${n.image}">` : ''}
+                    <h2>${n.title}</h2>
+                    <span class="artist">POR: REDAÇÃO ENIGMA | FOCO: ${n.artist}</span>
+                    <p class="content">${n.content}</p>
+                    <small>${n.date}</small>
+                </div>
+            ` + container.innerHTML;
+        });
+    });
+</script>
+</body>
+</html>
