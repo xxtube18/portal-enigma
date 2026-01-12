@@ -11,12 +11,12 @@
             --gold: #c5a059; 
             --dark-blue: #162a3d; 
             --mystic-blue: #2c567a;
-            --paper: #fdfaf3; /* Tom de papel antigo/claro */
+            --paper: #fdfaf3; 
         }
 
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--dark-blue); margin: 0; color: #fff; }
 
-        /* CAPA INICIAL COM CORES DA LOGO */
+        /* CAPA INICIAL */
         #capa { 
             height: 100vh; 
             display: flex; 
@@ -89,10 +89,10 @@
 
         .post h2 { font-size: 32px; color: var(--dark-blue); margin: 15px 0; text-transform: uppercase; border-bottom: 2px solid var(--gold); display: inline-block; }
         .post img { width: 100%; border: 1px solid #ccc; margin: 20px 0; }
-        .post-meta { font-size: 13px; color: var(--mystic-blue); font-weight: bold; display: block; margin-bottom: 10px; }
+        .post-meta { font-size: 13px; color: var(--mystic-blue); font-weight: bold; display: block; margin-bottom: 10px; text-transform: uppercase; }
         .post-body { font-size: 19px; line-height: 1.6; color: #333; text-align: justify; }
 
-        /* FORMULÁRIO DE REDAÇÃO */
+        /* FORMULÁRIO */
         .form-box { max-width: 600px; margin: 0 auto; padding: 30px; background: #fff; border: 2px solid var(--dark-blue); }
         input, textarea { 
             width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid var(--mystic-blue);
@@ -118,10 +118,10 @@
 
     <div id="capa">
         <img src="foto.png" class="logo-capa" alt="ENIGMA FALLS">
-        <div class="welcome-text">Informativo Oficial do Servidor</div>
+        <div class="welcome-text">Portal Oficial de Notícias</div>
         <div class="botoes">
             <button class="btn" onclick="mudarTela('tela-visualizar'); carregar();">Ver Notícias</button>
-            <button class="btn" onclick="abrirRedacao()">Painel de Controle</button>
+            <button class="btn" onclick="abrirRedacao()">Painel do Redator</button>
         </div>
     </div>
 
@@ -137,13 +137,13 @@
         <div class="nav-interna"><h2>NOVA PUBLICAÇÃO</h2> <button onclick="mudarTela('capa')" style="cursor:pointer; font-weight:bold;">FECHAR</button></div>
         <div class="form-box">
             <input type="text" id="tit" placeholder="TÍTULO DA MANCHETE">
-            <input type="text" id="art" placeholder="PESSOAS CITADAS">
-            <textarea id="fat" rows="6" placeholder="O QUE ACONTECEU NO SERVIDOR?"></textarea>
+            <input type="text" id="art" placeholder="QUEM É O ENVOLVIDO?">
+            <textarea id="fat" rows="6" placeholder="O QUE ACONTECEU?"></textarea>
             
             <label class="upload-area">
-                <strong>✨ SELECIONAR FOTO DA MATÉRIA ✨</strong>
+                <strong>📸 CLIQUE PARA SUBIR A FOTO</strong>
                 <input type="file" id="input-foto" accept="image/*" style="display: none;" onchange="previewImagem(this)">
-                <div id="preview-msg" style="font-size: 14px; margin-top: 10px; color: green; display: none; font-weight: bold;">FOTO CARREGADA COM SUCESSO!</div>
+                <div id="preview-msg" style="font-size: 14px; margin-top: 10px; color: green; display: none; font-weight: bold;">FOTO PRONTA!</div>
             </label>
 
             <button class="btn-postar" id="btn-publicar" onclick="publicar()">PUBLICAR AGORA</button>
@@ -169,7 +169,7 @@
         }
 
         function abrirRedacao() {
-            if(prompt("SENHA DE REDATOR:") === SENHA) mudarTela('tela-gerar');
+            if(prompt("SENHA DO REDATOR:") === SENHA) mudarTela('tela-gerar');
         }
 
         function previewImagem(input) {
@@ -187,18 +187,20 @@
             const f = document.getElementById('fat').value;
             const btn = document.getElementById('btn-publicar');
 
-            if(!t || !f) return alert("Erro: Manchete e Fatos são obrigatórios.");
+            if(!t || !f) return alert("Preencha os campos!");
 
             btn.disabled = true;
-            btn.innerText = "ENVIANDO AO PORTAL...";
+            btn.innerText = "POSTANDO...";
 
-            let base = `O Portal Enigma Falls apurou novos detalhes envolvendo ${a}. Segundo informações de nossos correspondentes: ${f}. `;
-            let complemento = "Nossa equipe continuará monitorando os eventos e trará novas informações assim que os fatos se desenrolarem no servidor. Fique atento para mais atualizações oficiais.";
-            let textoFinal = base + (f.length < 90 ? complemento : "");
+            // Texto expansível
+            let base = `O Portal Enigma Falls apurou novos detalhes envolvendo ${a}. Segundo informações exclusivas: ${f}. `;
+            let complemento = "Nossa equipe de redação continua acompanhando os fatos de perto no servidor. Mais atualizações podem surgir a qualquer momento.";
+            let textoFinal = base + (f.length < 80 ? complemento : "");
 
             db.ref('noticias').push({
-                titulo: t, texto: textoFinal, imagem: imagemBase64, data: new Date().toLocaleString('pt-BR')
+                titulo: t, texto: textoFinal, imagem: imagemBase64, data: new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })
             }).then(() => {
+                alert("NOTÍCIA PUBLICADA!");
                 imagemBase64 = "";
                 document.getElementById('tit').value = "";
                 document.getElementById('fat').value = "";
@@ -224,7 +226,7 @@
                 feed.innerHTML = lista.map(n => `
                     <div class="post">
                         <button class="btn-del" onclick="apagar('${n.id}')">✕</button>
-                        <span class="post-meta">BOLETIM ENIGMA • ${n.data}</span>
+                        <span class="post-meta">NOTICIA ENIGMA FALLS • ${n.data}</span>
                         <h2>${n.titulo}</h2>
                         ${n.imagem ? `<img src="${n.imagem}">` : ''}
                         <div class="post-body">${n.texto}</div>
