@@ -138,7 +138,7 @@
         <div class="form-box">
             <input type="text" id="tit" placeholder="TÍTULO DA MANCHETE">
             <input type="text" id="art" placeholder="QUEM É O ENVOLVIDO?">
-            <textarea id="fat" rows="6" placeholder="O QUE ACONTECEU?"></textarea>
+            <textarea id="fat" rows="6" placeholder="O QUE ACONTECEU NO SERVIDOR?"></textarea>
             
             <label class="upload-area">
                 <strong>📸 CLIQUE PARA SUBIR A FOTO</strong>
@@ -192,7 +192,6 @@
             btn.disabled = true;
             btn.innerText = "POSTANDO...";
 
-            // Texto expansível
             let base = `O Portal Enigma Falls apurou novos detalhes envolvendo ${a}. Segundo informações exclusivas: ${f}. `;
             let complemento = "Nossa equipe de redação continua acompanhando os fatos de perto no servidor. Mais atualizações podem surgir a qualquer momento.";
             let textoFinal = base + (f.length < 80 ? complemento : "");
@@ -200,7 +199,7 @@
             db.ref('noticias').push({
                 titulo: t, texto: textoFinal, imagem: imagemBase64, data: new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })
             }).then(() => {
-                alert("NOTÍCIA PUBLICADA!");
+                alert("NOTÍCIA PUBLICADA COM SUCESSO!");
                 imagemBase64 = "";
                 document.getElementById('tit').value = "";
                 document.getElementById('fat').value = "";
@@ -226,7 +225,7 @@
                 feed.innerHTML = lista.map(n => `
                     <div class="post">
                         <button class="btn-del" onclick="apagar('${n.id}')">✕</button>
-                        <span class="post-meta">NOTICIA ENIGMA FALLS • ${n.data}</span>
+                        <span class="post-meta">NOTÍCIA ENIGMA FALLS • ${n.data}</span>
                         <h2>${n.titulo}</h2>
                         ${n.imagem ? `<img src="${n.imagem}">` : ''}
                         <div class="post-body">${n.texto}</div>
