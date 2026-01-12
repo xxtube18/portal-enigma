@@ -8,15 +8,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
         :root { 
-            --primary: #ff4757; 
-            --secondary: #2ed573; 
-            --accent: #1e90ff;
-            --bg: #f1f2f6;
+            --gold: #c5a059; 
+            --dark-blue: #162a3d; 
+            --mystic-blue: #2c567a;
+            --paper: #fdfaf3; /* Tom de papel antigo/claro */
         }
 
-        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); margin: 0; color: #2f3542; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--dark-blue); margin: 0; color: #fff; }
 
-        /* CAPA INICIAL ALEGRE */
+        /* CAPA INICIAL COM CORES DA LOGO */
         #capa { 
             height: 100vh; 
             display: flex; 
@@ -24,141 +24,129 @@
             justify-content: center; 
             align-items: center; 
             text-align: center; 
-            background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+            background: radial-gradient(circle, var(--mystic-blue) 0%, var(--dark-blue) 100%);
             padding: 20px;
         }
 
         .logo-capa { 
-            max-width: 320px; 
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
-            margin-bottom: 20px;
-            animation: bounce 3s infinite ease-in-out;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+            max-width: 380px; 
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(197, 160, 89, 0.4);
+            margin-bottom: 30px;
+            border: 4px solid var(--gold);
         }
 
         .welcome-text {
-            color: #fff;
-            font-size: 24px;
+            color: var(--gold);
+            font-size: 28px;
             font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
         }
 
-        .botoes { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
+        .botoes { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
 
         .btn { 
-            padding: 15px 35px; 
-            border: none; 
-            border-radius: 50px;
-            background: #fff; 
-            color: #57606f; 
+            padding: 18px 40px; 
+            border: 2px solid var(--gold); 
+            border-radius: 5px;
+            background: transparent; 
+            color: var(--gold); 
             cursor: pointer; 
             text-transform: uppercase; 
-            letter-spacing: 1px; 
-            transition: 0.3s; 
-            font-weight: 800; 
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            letter-spacing: 2px; 
+            transition: 0.4s; 
+            font-weight: bold;
         }
 
-        .btn:hover { transform: scale(1.05); box-shadow: 0 12px 20px rgba(0,0,0,0.2); color: var(--accent); }
-        .btn-redacao { background: var(--primary); color: #fff; }
-        .btn-redacao:hover { background: #ff6b81; color: #fff; }
+        .btn:hover { background: var(--gold); color: var(--dark-blue); box-shadow: 0 0 20px rgba(197, 160, 89, 0.6); }
 
         /* TELAS INTERNAS */
-        .tela { display: none; min-height: 100vh; background: #fff; padding: 20px; box-sizing: border-box; }
+        .tela { display: none; min-height: 100vh; background: var(--paper); color: var(--dark-blue); padding: 20px; box-sizing: border-box; }
         
         .nav-interna { 
             max-width: 1000px; 
             margin: 0 auto 30px auto; 
-            background: #fff;
-            padding: 15px 25px; 
+            border-bottom: 3px solid var(--dark-blue);
+            padding: 15px 0; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
-        /* FEED DE NOTÍCIAS COLORIDO */
-        .feed { max-width: 800px; margin: 0 auto; }
+        /* CARDS DE NOTÍCIA */
+        .feed { max-width: 850px; margin: 0 auto; }
         .post { 
             background: #fff;
-            border-radius: 20px;
-            padding: 25px; 
-            margin-bottom: 30px; 
+            border: 1px solid #ddd;
+            padding: 30px; 
+            margin-bottom: 40px; 
             position: relative; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            border-top: 8px solid var(--accent);
+            box-shadow: 10px 10px 0px var(--gold);
         }
-        
-        .post:nth-child(even) { border-top-color: var(--secondary); }
-        .post:nth-child(3n) { border-top-color: var(--primary); }
 
-        .post h2 { font-size: 28px; color: #2f3542; margin: 10px 0; line-height: 1.2; }
-        .post img { width: 100%; border-radius: 15px; margin: 15px 0; }
-        .post-meta { font-size: 12px; color: #a4b0be; font-weight: bold; }
-        .post-body { font-size: 17px; line-height: 1.6; color: #57606f; text-align: left; }
+        .post h2 { font-size: 32px; color: var(--dark-blue); margin: 15px 0; text-transform: uppercase; border-bottom: 2px solid var(--gold); display: inline-block; }
+        .post img { width: 100%; border: 1px solid #ccc; margin: 20px 0; }
+        .post-meta { font-size: 13px; color: var(--mystic-blue); font-weight: bold; display: block; margin-bottom: 10px; }
+        .post-body { font-size: 19px; line-height: 1.6; color: #333; text-align: justify; }
 
-        /* FORMULÁRIO */
-        .form-box { max-width: 500px; margin: 0 auto; padding: 20px; background: #f9f9f9; border-radius: 20px; }
+        /* FORMULÁRIO DE REDAÇÃO */
+        .form-box { max-width: 600px; margin: 0 auto; padding: 30px; background: #fff; border: 2px solid var(--dark-blue); }
         input, textarea { 
-            width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px;
-            border: 2px solid #eee; font-size: 16px; box-sizing: border-box; 
+            width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid var(--mystic-blue);
+            font-size: 16px; box-sizing: border-box; background: #fafafa;
         }
-        input:focus { border-color: var(--accent); outline: none; }
         
         .upload-area { 
-            display: block; border: 2px dashed #ccc; padding: 20px; 
-            text-align: center; margin-bottom: 15px; cursor: pointer; 
-            border-radius: 10px; background: #fff; 
+            display: block; border: 2px dashed var(--gold); padding: 25px; 
+            text-align: center; margin-bottom: 20px; cursor: pointer; color: var(--mystic-blue);
         }
 
         .btn-postar { 
-            background: linear-gradient(to right, var(--accent), var(--secondary)); 
-            color: #fff; border: none; width: 100%; padding: 18px; 
-            cursor: pointer; font-weight: bold; border-radius: 10px; font-size: 16px;
+            background: var(--dark-blue); 
+            color: var(--gold); border: 2px solid var(--gold); width: 100%; padding: 20px; 
+            cursor: pointer; font-weight: bold; font-size: 18px; text-transform: uppercase;
         }
 
-        .btn-del { position: absolute; top: 15px; right: 15px; background: #fff2f2; border: none; color: #ff4757; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-weight: bold; }
+        .btn-del { position: absolute; top: 10px; right: 10px; background: transparent; border: none; color: #ccc; cursor: pointer; font-size: 20px; }
+        .btn-del:hover { color: red; }
     </style>
 </head>
 <body>
 
     <div id="capa">
-        <img src="foto.png" class="logo-capa" alt="PORTAL ENIGMA FALLS">
-        <div class="welcome-text">Bem-vindo ao Portal de Notícias!</div>
+        <img src="foto.png" class="logo-capa" alt="ENIGMA FALLS">
+        <div class="welcome-text">Informativo Oficial do Servidor</div>
         <div class="botoes">
-            <button class="btn" onclick="mudarTela('tela-visualizar'); carregar();">Ver Novidades</button>
-            <button class="btn btn-redacao" onclick="abrirRedacao()">Painel de Redação</button>
+            <button class="btn" onclick="mudarTela('tela-visualizar'); carregar();">Ver Notícias</button>
+            <button class="btn" onclick="abrirRedacao()">Painel de Controle</button>
         </div>
     </div>
 
     <div id="tela-visualizar" class="tela">
         <div class="nav-interna">
-            <img src="foto.png" style="height: 40px;">
-            <button onclick="mudarTela('capa')" class="btn" style="padding: 10px 20px; font-size: 12px;">Voltar</button>
+            <img src="foto.png" style="height: 60px; border-radius: 50%;">
+            <button onclick="mudarTela('capa')" class="btn" style="padding: 10px 20px; font-size: 12px; background: var(--dark-blue);">VOLTAR</button>
         </div>
         <div id="feed" class="feed"></div>
     </div>
 
     <div id="tela-gerar" class="tela">
-        <div class="nav-interna"><h2>Criar Publicação</h2> <button onclick="mudarTela('capa')" style="border:none; background:none; font-size:20px; cursor:pointer;">✕</button></div>
+        <div class="nav-interna"><h2>NOVA PUBLICAÇÃO</h2> <button onclick="mudarTela('capa')" style="cursor:pointer; font-weight:bold;">FECHAR</button></div>
         <div class="form-box">
-            <input type="text" id="tit" placeholder="Dê um título legal!">
-            <input type="text" id="art" placeholder="Quem participou?">
-            <textarea id="fat" rows="5" placeholder="Conte a história aqui..."></textarea>
+            <input type="text" id="tit" placeholder="TÍTULO DA MANCHETE">
+            <input type="text" id="art" placeholder="PESSOAS CITADAS">
+            <textarea id="fat" rows="6" placeholder="O QUE ACONTECEU NO SERVIDOR?"></textarea>
             
             <label class="upload-area">
-                <strong>📸 Adicionar Foto</strong>
+                <strong>✨ SELECIONAR FOTO DA MATÉRIA ✨</strong>
                 <input type="file" id="input-foto" accept="image/*" style="display: none;" onchange="previewImagem(this)">
-                <div id="preview-msg" style="font-size: 12px; margin-top: 5px; color: var(--secondary); display: none;">Pronto para postar!</div>
+                <div id="preview-msg" style="font-size: 14px; margin-top: 10px; color: green; display: none; font-weight: bold;">FOTO CARREGADA COM SUCESSO!</div>
             </label>
 
-            <button class="btn-postar" id="btn-publicar" onclick="publicar()">🚀 POSTAR NO PORTAL</button>
+            <button class="btn-postar" id="btn-publicar" onclick="publicar()">PUBLICAR AGORA</button>
         </div>
     </div>
 
@@ -181,7 +169,7 @@
         }
 
         function abrirRedacao() {
-            if(prompt("SENHA DE ACESSO:") === SENHA) mudarTela('tela-gerar');
+            if(prompt("SENHA DE REDATOR:") === SENHA) mudarTela('tela-gerar');
         }
 
         function previewImagem(input) {
@@ -199,32 +187,31 @@
             const f = document.getElementById('fat').value;
             const btn = document.getElementById('btn-publicar');
 
-            if(!t || !f) return alert("Ei! Coloque um título e a história.");
+            if(!t || !f) return alert("Erro: Manchete e Fatos são obrigatórios.");
 
             btn.disabled = true;
-            btn.innerText = "POSTANDO...";
+            btn.innerText = "ENVIANDO AO PORTAL...";
 
-            let base = `O Portal Enigma Falls traz uma novidade incrível sobre ${a}! 🎉 ${f}. `;
-            let complemento = "Estamos todos muito animados com essa notícia e vamos continuar acompanhando tudo de perto para contar para vocês. Fiquem ligados aqui no portal para não perderem nenhum detalhe desse servidor maravilhoso!";
-            let textoFinal = base + (f.length < 80 ? complemento : "");
+            let base = `O Portal Enigma Falls apurou novos detalhes envolvendo ${a}. Segundo informações de nossos correspondentes: ${f}. `;
+            let complemento = "Nossa equipe continuará monitorando os eventos e trará novas informações assim que os fatos se desenrolarem no servidor. Fique atento para mais atualizações oficiais.";
+            let textoFinal = base + (f.length < 90 ? complemento : "");
 
             db.ref('noticias').push({
                 titulo: t, texto: textoFinal, imagem: imagemBase64, data: new Date().toLocaleString('pt-BR')
             }).then(() => {
-                alert("SUCESSO! Sua notícia já está no ar.");
                 imagemBase64 = "";
                 document.getElementById('tit').value = "";
                 document.getElementById('fat').value = "";
                 document.getElementById('preview-msg').style.display = 'none';
                 btn.disabled = false;
-                btn.innerText = "🚀 POSTAR NO PORTAL";
+                btn.innerText = "PUBLICAR AGORA";
                 mudarTela('tela-visualizar');
                 carregar();
             });
         }
 
         function apagar(id) {
-            if(prompt("SENHA PARA APAGAR:") === SENHA) db.ref('noticias/' + id).remove();
+            if(prompt("SENHA PARA EXCLUIR:") === SENHA) db.ref('noticias/' + id).remove();
         }
 
         function carregar() {
@@ -237,7 +224,7 @@
                 feed.innerHTML = lista.map(n => `
                     <div class="post">
                         <button class="btn-del" onclick="apagar('${n.id}')">✕</button>
-                        <span class="post-meta">🗓️ ${n.data}</span>
+                        <span class="post-meta">BOLETIM ENIGMA • ${n.data}</span>
                         <h2>${n.titulo}</h2>
                         ${n.imagem ? `<img src="${n.imagem}">` : ''}
                         <div class="post-body">${n.texto}</div>
