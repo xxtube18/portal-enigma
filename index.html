@@ -7,67 +7,158 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
-        :root { --red: #bc0000; --dark: #000; --paper: #ffffff; }
-        body { font-family: 'Times New Roman', serif; background: var(--dark); margin: 0; color: #fff; }
+        :root { 
+            --primary: #ff4757; 
+            --secondary: #2ed573; 
+            --accent: #1e90ff;
+            --bg: #f1f2f6;
+        }
 
-        /* CAPA INICIAL */
-        #capa { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: radial-gradient(circle, #1a1a1a, #000); }
-        .logo-capa { max-width: 400px; margin-bottom: 30px; }
-        .botoes { display: flex; gap: 20px; }
-        .btn { padding: 15px 40px; border: 1px solid #fff; background: none; color: #fff; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: 0.4s; font-weight: bold; }
-        .btn:hover { background: #fff; color: #000; }
-        .btn-redacao { border-color: var(--red); color: var(--red); }
-        .btn-redacao:hover { background: var(--red); color: #fff; }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); margin: 0; color: #2f3542; }
 
-        /* TELAS */
-        .tela { display: none; min-height: 100vh; background: var(--paper); color: #000; padding: 20px; box-sizing: border-box; }
-        .nav-interna { max-width: 1000px; margin: 0 auto 20px auto; border-bottom: 4px solid #000; padding: 10px 0; display: flex; justify-content: space-between; align-items: center; }
+        /* CAPA INICIAL ALEGRE */
+        #capa { 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            text-align: center; 
+            background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+            padding: 20px;
+        }
+
+        .logo-capa { 
+            max-width: 320px; 
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+            margin-bottom: 20px;
+            animation: bounce 3s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .welcome-text {
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .botoes { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
+
+        .btn { 
+            padding: 15px 35px; 
+            border: none; 
+            border-radius: 50px;
+            background: #fff; 
+            color: #57606f; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            transition: 0.3s; 
+            font-weight: 800; 
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover { transform: scale(1.05); box-shadow: 0 12px 20px rgba(0,0,0,0.2); color: var(--accent); }
+        .btn-redacao { background: var(--primary); color: #fff; }
+        .btn-redacao:hover { background: #ff6b81; color: #fff; }
+
+        /* TELAS INTERNAS */
+        .tela { display: none; min-height: 100vh; background: #fff; padding: 20px; box-sizing: border-box; }
         
-        /* LAYOUT DOS POSTS (ESTILO JORNAL) */
-        .feed { max-width: 900px; margin: 0 auto; }
-        .post { border-bottom: 2px solid #000; padding: 40px 0; position: relative; }
-        .post-header { text-align: center; margin-bottom: 20px; }
-        .post h2 { font-size: 45px; margin: 0; text-transform: uppercase; line-height: 0.9; font-weight: 900; }
-        .post img { width: 100%; max-height: 500px; object-fit: cover; margin: 20px 0; border: 1px solid #ddd; }
-        .post-meta { font-family: Arial, sans-serif; font-size: 12px; text-transform: uppercase; color: var(--red); font-weight: bold; margin-bottom: 10px; display: block;}
-        .post-body { font-size: 21px; line-height: 1.5; text-align: justify; columns: 2; column-gap: 40px; }
+        .nav-interna { 
+            max-width: 1000px; 
+            margin: 0 auto 30px auto; 
+            background: #fff;
+            padding: 15px 25px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        /* FEED DE NOTÍCIAS COLORIDO */
+        .feed { max-width: 800px; margin: 0 auto; }
+        .post { 
+            background: #fff;
+            border-radius: 20px;
+            padding: 25px; 
+            margin-bottom: 30px; 
+            position: relative; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border-top: 8px solid var(--accent);
+        }
         
-        @media (max-width: 700px) { .post-body { columns: 1; } .post h2 { font-size: 30px; } }
+        .post:nth-child(even) { border-top-color: var(--secondary); }
+        .post:nth-child(3n) { border-top-color: var(--primary); }
+
+        .post h2 { font-size: 28px; color: #2f3542; margin: 10px 0; line-height: 1.2; }
+        .post img { width: 100%; border-radius: 15px; margin: 15px 0; }
+        .post-meta { font-size: 12px; color: #a4b0be; font-weight: bold; }
+        .post-body { font-size: 17px; line-height: 1.6; color: #57606f; text-align: left; }
 
         /* FORMULÁRIO */
-        .form-box { max-width: 600px; margin: 0 auto; padding: 20px; }
-        input, textarea { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #000; font-size: 16px; font-family: Arial; }
-        .btn-postar { background: var(--red); color: #fff; border: none; width: 100%; padding: 20px; cursor: pointer; font-weight: bold; font-size: 18px; }
+        .form-box { max-width: 500px; margin: 0 auto; padding: 20px; background: #f9f9f9; border-radius: 20px; }
+        input, textarea { 
+            width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px;
+            border: 2px solid #eee; font-size: 16px; box-sizing: border-box; 
+        }
+        input:focus { border-color: var(--accent); outline: none; }
+        
+        .upload-area { 
+            display: block; border: 2px dashed #ccc; padding: 20px; 
+            text-align: center; margin-bottom: 15px; cursor: pointer; 
+            border-radius: 10px; background: #fff; 
+        }
 
-        .btn-del { position: absolute; top: 10px; right: 0; background: none; border: none; color: #ccc; cursor: pointer; }
+        .btn-postar { 
+            background: linear-gradient(to right, var(--accent), var(--secondary)); 
+            color: #fff; border: none; width: 100%; padding: 18px; 
+            cursor: pointer; font-weight: bold; border-radius: 10px; font-size: 16px;
+        }
+
+        .btn-del { position: absolute; top: 15px; right: 15px; background: #fff2f2; border: none; color: #ff4757; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div id="capa">
         <img src="foto.png" class="logo-capa" alt="PORTAL ENIGMA FALLS">
+        <div class="welcome-text">Bem-vindo ao Portal de Notícias!</div>
         <div class="botoes">
-            <button class="btn" onclick="mudarTela('tela-visualizar'); carregar();">Visualizar Notícias</button>
-            <button class="btn btn-redacao" onclick="abrirRedacao()">Gerar Notícia</button>
+            <button class="btn" onclick="mudarTela('tela-visualizar'); carregar();">Ver Novidades</button>
+            <button class="btn btn-redacao" onclick="abrirRedacao()">Painel de Redação</button>
         </div>
     </div>
 
     <div id="tela-visualizar" class="tela">
         <div class="nav-interna">
-            <img src="foto.png" style="height: 50px;">
-            <button onclick="mudarTela('capa')" style="background:#000; color:#fff; border:none; padding:10px 20px; cursor:pointer;">VOLTAR AO INÍCIO</button>
+            <img src="foto.png" style="height: 40px;">
+            <button onclick="mudarTela('capa')" class="btn" style="padding: 10px 20px; font-size: 12px;">Voltar</button>
         </div>
         <div id="feed" class="feed"></div>
     </div>
 
     <div id="tela-gerar" class="tela">
-        <div class="nav-interna"><h2>NOVA REDAÇÃO</h2> <button onclick="mudarTela('capa')">X</button></div>
+        <div class="nav-interna"><h2>Criar Publicação</h2> <button onclick="mudarTela('capa')" style="border:none; background:none; font-size:20px; cursor:pointer;">✕</button></div>
         <div class="form-box">
-            <input type="text" id="tit" placeholder="MANCHETE PRINCIPAL">
-            <input type="text" id="art" placeholder="QUEM É O ENVOLVIDO?">
-            <textarea id="fat" rows="8" placeholder="O QUE ACONTECEU? (Pode escrever pouco, o sistema completa)"></textarea>
-            <input type="text" id="img" placeholder="LINK DA FOTO (.JPG / .PNG)">
-            <button class="btn-postar" onclick="publicar()">PUBLICAR AGORA</button>
+            <input type="text" id="tit" placeholder="Dê um título legal!">
+            <input type="text" id="art" placeholder="Quem participou?">
+            <textarea id="fat" rows="5" placeholder="Conte a história aqui..."></textarea>
+            
+            <label class="upload-area">
+                <strong>📸 Adicionar Foto</strong>
+                <input type="file" id="input-foto" accept="image/*" style="display: none;" onchange="previewImagem(this)">
+                <div id="preview-msg" style="font-size: 12px; margin-top: 5px; color: var(--secondary); display: none;">Pronto para postar!</div>
+            </label>
+
+            <button class="btn-postar" id="btn-publicar" onclick="publicar()">🚀 POSTAR NO PORTAL</button>
         </div>
     </div>
 
@@ -82,6 +173,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const SENHA = "777";
+        let imagemBase64 = "";
 
         function mudarTela(id) {
             document.querySelectorAll('.tela, #capa').forEach(t => t.style.display = 'none');
@@ -89,28 +181,43 @@
         }
 
         function abrirRedacao() {
-            if(prompt("SENHA DO REDATOR:") === SENHA) mudarTela('tela-gerar');
+            if(prompt("SENHA DE ACESSO:") === SENHA) mudarTela('tela-gerar');
+        }
+
+        function previewImagem(input) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagemBase64 = e.target.result;
+                document.getElementById('preview-msg').style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
         }
 
         function publicar() {
             const t = document.getElementById('tit').value;
             const a = document.getElementById('art').value;
             const f = document.getElementById('fat').value;
-            const i = document.getElementById('img').value;
+            const btn = document.getElementById('btn-publicar');
 
-            if(!t || !f) return alert("Preencha a manchete!");
+            if(!t || !f) return alert("Ei! Coloque um título e a história.");
 
-            // LÓGICA DE EXPANSÃO DE TEXTO (IA SIMULADA)
-            let base = `Em um desdobramento inesperado que pegou a todos de surpresa, o Portal Enigma Falls confirmou informações exclusivas sobre ${a}. De acordo com as investigações preliminares conduzidas por nossa equipe, os fatos indicam que ${f}. `;
-            
-            let complemento = "Fontes ligadas aos envolvidos preferiram manter o anonimato, mas garantiram que novas atualizações devem surgir nas próximas horas. A redação do Enigma Falls segue em plantão contínuo, monitorando cada movimento deste caso para trazer a verdade aos nossos leitores em primeira mão. Até o fechamento desta edição, nenhum pronunciamento oficial adicional foi emitido, deixando o cenário ainda mais envolto em mistério e expectativa.";
+            btn.disabled = true;
+            btn.innerText = "POSTANDO...";
 
-            let textoFinal = base + (f.length < 150 ? complemento : "");
+            let base = `O Portal Enigma Falls traz uma novidade incrível sobre ${a}! 🎉 ${f}. `;
+            let complemento = "Estamos todos muito animados com essa notícia e vamos continuar acompanhando tudo de perto para contar para vocês. Fiquem ligados aqui no portal para não perderem nenhum detalhe desse servidor maravilhoso!";
+            let textoFinal = base + (f.length < 80 ? complemento : "");
 
             db.ref('noticias').push({
-                titulo: t, texto: textoFinal, imagem: i, data: new Date().toLocaleString('pt-BR')
+                titulo: t, texto: textoFinal, imagem: imagemBase64, data: new Date().toLocaleString('pt-BR')
             }).then(() => {
-                alert("MANCHETE PUBLICADA!");
+                alert("SUCESSO! Sua notícia já está no ar.");
+                imagemBase64 = "";
+                document.getElementById('tit').value = "";
+                document.getElementById('fat').value = "";
+                document.getElementById('preview-msg').style.display = 'none';
+                btn.disabled = false;
+                btn.innerText = "🚀 POSTAR NO PORTAL";
                 mudarTela('tela-visualizar');
                 carregar();
             });
@@ -129,9 +236,9 @@
                 
                 feed.innerHTML = lista.map(n => `
                     <div class="post">
-                        <button class="btn-del" onclick="apagar('${n.id}')">Excluir</button>
-                        <span class="post-meta">URGENTE • ${n.data}</span>
-                        <div class="post-header"><h2>${n.titulo}</h2></div>
+                        <button class="btn-del" onclick="apagar('${n.id}')">✕</button>
+                        <span class="post-meta">🗓️ ${n.data}</span>
+                        <h2>${n.titulo}</h2>
                         ${n.imagem ? `<img src="${n.imagem}">` : ''}
                         <div class="post-body">${n.texto}</div>
                     </div>
