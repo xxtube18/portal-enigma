@@ -3,120 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PORTAL ENIGMA FALLS - Oficial</title>
+    <title>PORTAL ENIGMA FALLS</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
-        body { font-family: 'Arial', sans-serif; background: #fff; margin: 0; padding: 0; }
-        header { border-bottom: 2px solid #000; padding: 20px; text-align: center; position: relative; }
-        h1 { margin: 0; font-size: 40px; text-transform: uppercase; font-weight: 900; }
-        #admin-panel { display: none; background: #1a1a1a; color: #fff; padding: 20px; border-bottom: 5px solid #ff0000; }
-        #admin-panel input, #admin-panel textarea { width: 100%; margin: 10px 0; padding: 10px; border: none; border-radius: 4px; }
-        #admin-panel button { background: #ff0000; color: white; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; width: 100%; }
-        #news-container { max-width: 900px; margin: 20px auto; padding: 20px; }
-        .news-item { border-bottom: 1px solid #ddd; margin-bottom: 30px; padding-bottom: 20px; }
-        .news-item img { width: 100%; max-height: 500px; object-fit: cover; border-radius: 8px; }
-        .news-item h2 { font-size: 32px; color: #000; margin: 15px 0 5px 0; text-transform: uppercase; }
-        .news-item .artist { font-weight: bold; color: #ff0000; font-size: 14px; margin-bottom: 10px; display: block; }
-        .news-item .content { line-height: 1.6; color: #333; font-size: 18px; }
-        #login-btn { position: fixed; bottom: 20px; right: 20px; background: none; border: none; cursor: pointer; font-size: 24px; opacity: 0.3; }
-        #login-btn:hover { opacity: 1; }
+        body { font-family: 'Arial', sans-serif; background: #000; color: #fff; margin: 0; overflow-x: hidden; }
+        #capa { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #222, #000); text-align: center; }
+        h1 { font-size: clamp(30px, 8vw, 60px); letter-spacing: 10px; margin-bottom: 40px; }
+        .botoes { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+        .btn { padding: 20px 40px; border: 2px solid #fff; background: none; color: #fff; cursor: pointer; font-weight: bold; text-transform: uppercase; width: 250px; transition: 0.3s; }
+        .btn:hover { background: #fff; color: #000; }
+        .btn-redacao { border-color: #ff0000; color: #ff0000; }
+        .btn-redacao:hover { background: #ff0000; color: #fff; }
+        .tela { display: none; min-height: 100vh; padding: 20px; background: #f4f4f4; color: #000; box-sizing: border-box; }
+        .header-interna { max-width: 800px; margin: 0 auto 20px auto; border-bottom: 2px solid #000; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .form-box { max-width: 600px; margin: 0 auto; background: #fff; padding: 30px; border: 1px solid #ddd; border-radius: 8px; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; box-sizing: border-box; border-radius: 4px; }
+        .btn-postar { background: #ff0000; color: #fff; border: none; padding: 15px; width: 100%; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        .feed { max-width: 800px; margin: 0 auto; }
+        .card { background: #fff; padding: 25px; margin-bottom: 30px; border-left: 10px solid #ff0000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .card h2 { margin: 0 0 10px 0; font-family: 'Times New Roman', serif; font-size: 32px; text-transform: uppercase; }
+        .card img { width: 100%; border-radius: 4px; margin: 15px 0; }
+        .card .texto { font-size: 19px; line-height: 1.6; text-align: justify; color: #333; }
     </style>
 </head>
 <body>
 
-<div id="admin-panel">
-    <h3>Painel de Redação - Enigma Falls</h3>
-    <input type="text" id="title" placeholder="TÍTULO DA NOTÍCIA (EM MAIÚSCULAS)">
-    <input type="text" id="artist" placeholder="NOME DO ARTISTA / PESSOA ENVOLVIDA">
-    <textarea id="facts" placeholder="DESCREVA O QUE ACONTECEU (OS FATOS)..." rows="4"></textarea>
-    <input type="text" id="image" placeholder="LINK DA IMAGEM (.JPG ou .PNG)">
-    <button onclick="publishNews()">PUBLICAR NOTÍCIA AGORA</button>
-    <button onclick="logout()" style="background: #444; margin-top: 10px;">SAIR DO PAINEL</button>
-</div>
-
-<header>
-    <h1>PORTAL ENTRETENIMENTO</h1>
-    <div style="font-weight: bold; letter-spacing: 2px;">ENIGMA FALLS</div>
-</header>
-
-<div id="news-container">
+    <div id="capa">
+        <h1>PORTAL ENIGMA</h1>
+        <div class="botoes">
+            <button class="btn" onclick="verNoticias()">Visualizar Notícias</button>
+            <button class="btn btn-redacao" onclick="abrirRedacao()">Gerar Notícia</button>
+        </div>
     </div>
 
-<button id="login-btn" onclick="login()">🔒</button>
+    <div id="tela-visualizar" class="tela">
+        <div class="header-interna">
+            <h2 style="margin:0;">NOTÍCIAS RECENTES</h2>
+            <button onclick="voltar()" style="cursor:pointer; background:#000; color:#fff; border:none; padding:8px 15px;">VOLTAR</button>
+        </div>
+        <div id="feed" class="feed"></div>
+    </div>
 
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyBtQZwmY-PG9SVlFueM0o2n4Mj0ebVQwTY",
-        authDomain: "portal-enigma-falls.firebaseapp.com",
-        projectId: "portal-enigma-falls",
-        storageBucket: "portal-enigma-falls.firebasestorage.app",
-        messagingSenderId: "1066927825058",
-        appId: "1:1066927825058:web:61ec0e94c15dc1ab33f7fb"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
+    <div id="tela-gerar" class="tela">
+        <div class="header-interna">
+            <h2 style="margin:0; color:#ff0000;">NOVA PUBLICAÇÃO</h2>
+            <button onclick="voltar()" style="cursor:pointer; background:#000; color:#fff; border:none; padding:8px 15px;">CANCELAR</button>
+        </div>
+        <div class="form-box">
+            <input type="text" id="tit" placeholder="TÍTULO">
+            <input type="text" id="art" placeholder="ARTISTA">
+            <textarea id="fat" rows="5" placeholder="RELATO..."></textarea>
+            <input type="text" id="img" placeholder="LINK DA IMAGEM">
+            <button class="btn-postar" onclick="publicar()">PUBLICAR AGORA</button>
+        </div>
+    </div>
 
-    const autorizados = ["ft5461299@gmail.com"];
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBtQZwmY-PG9SVlFueM0o2n4Mj0ebVQwTY",
+            authDomain: "portal-enigma-falls.firebaseapp.com",
+            projectId: "portal-enigma-falls",
+            databaseURL: "https://portal-enigma-falls-default-rtdb.firebaseio.com",
+            storageBucket: "portal-enigma-falls.firebasestorage.app"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const SENHA = "777"; 
 
-    // LOGIN POR REDIRECT (Resolve o problema do Edge e Pop-up)
-    function login() {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithRedirect(provider);
-    }
+        function voltar() {
+            document.querySelectorAll('.tela').forEach(t => t.style.display = 'none');
+            document.getElementById('capa').style.display = 'flex';
+        }
 
-    // VERIFICA SE VOLTOU DO LOGIN
-    auth.getRedirectResult().then(() => {
-        auth.onAuthStateChanged(user => {
-            if (user && autorizados.includes(user.email)) {
-                document.getElementById('admin-panel').style.display = 'block';
-                document.getElementById('login-btn').style.display = 'none';
+        function verNoticias() {
+            document.getElementById('capa').style.display = 'none';
+            document.getElementById('tela-visualizar').style.display = 'block';
+            carregar();
+        }
+
+        function abrirRedacao() {
+            if(prompt("SENHA:") === SENHA) {
+                document.getElementById('capa').style.display = 'none';
+                document.getElementById('tela-gerar').style.display = 'block';
             }
-        });
-    });
+        }
 
-    function logout() {
-        auth.signOut().then(() => location.reload());
-    }
+        function publicar() {
+            const t = document.getElementById('tit').value;
+            const a = document.getElementById('art').value;
+            const f = document.getElementById('fat').value;
+            const i = document.getElementById('img').value;
+            const textoFinal = `<strong>URGENTE:</strong> O Portal Enigma Falls apurou sobre <strong>${a}</strong>: ${f}.`;
 
-    function publishNews() {
-        const title = document.getElementById('title').value;
-        const artist = document.getElementById('artist').value;
-        const facts = document.getElementById('facts').value;
-        const image = document.getElementById('image').value;
+            db.ref('noticias').push({
+                titulo: t, texto: textoFinal, imagem: i, data: new Date().toLocaleString()
+            }).then(() => {
+                alert("POSTADO!");
+                verNoticias();
+            });
+        }
 
-        if(!title || !facts) return alert("Preencha o título e os fatos!");
-
-        // IA Simples: Transforma fatos em texto formal
-        const textoFormal = `Nesta data, recebemos informações exclusivas sobre ${artist}. Segundo apurado pela nossa redação: ${facts}. O caso segue sendo acompanhado de perto pelo Portal Enigma Falls.`;
-
-        db.ref('noticias').push({
-            title, artist, content: textoFormal, image, date: new Date().toLocaleString()
-        });
-
-        alert("Publicado!");
-        location.reload();
-    }
-
-    // CARREGAR NOTÍCIAS
-    db.ref('noticias').on('value', snapshot => {
-        const container = document.getElementById('news-container');
-        container.innerHTML = "";
-        snapshot.forEach(child => {
-            const n = child.val();
-            container.innerHTML = `
-                <div class="news-item">
-                    ${n.image ? `<img src="${n.image}">` : ''}
-                    <h2>${n.title}</h2>
-                    <span class="artist">POR: REDAÇÃO ENIGMA | FOCO: ${n.artist}</span>
-                    <p class="content">${n.content}</p>
-                    <small>${n.date}</small>
-                </div>
-            ` + container.innerHTML;
-        });
-    });
-</script>
+        function carregar() {
+            db.ref('noticias').on('value', snapshot => {
+                const feed = document.getElementById('feed');
+                feed.innerHTML = "";
+                snapshot.forEach(item => {
+                    const n = item.val();
+                    feed.innerHTML = `
+                        <div class="card">
+                            <h2>${n.titulo}</h2>
+                            ${n.imagem ? `<img src="${n.imagem}">` : ''}
+                            <div class="texto">${n.texto}</div>
+                        </div>` + feed.innerHTML;
+                });
+            });
+        }
+    </script>
 </body>
 </html>
